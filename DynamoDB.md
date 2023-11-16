@@ -100,7 +100,88 @@
   - Implement encryption at rest using AWS Key Management Service (KMS).
 * **Streams:**
   - DynamoDB Streams captures changes to data in a table in real-time. You can use streams for various purposes, such as triggering Lambda functions or maintaining change logs.
+## Indexes
 
+- Indexes in DynamoDB are additional data structures that allow you to query your data in ways other than the primary key. They provide more flexibility in querying your data without having to rely solely on the primary key attributes.
+
+
+* **Secondary Indexes**
+
+  * Secondary indexes, including both Local Secondary Indexes (LSI) and Global Secondary Indexes (GSI), enhance query flexibility by enabling non-primary key-based queries.
+
+* **Local Secondary Indexes (LSI)**
+
+  - LSIs are bound to the same partition key as the base table and must be defined at the time of table creation.
+
+  - They allow you to optimize queries within a single partition by specifying different sort keys for sorting and querying within that partition.
+
+  - LSIs are beneficial when you have specific query patterns that involve non-primary key attributes within a single partition.
+
+  - They reduce query costs and improve query performance within a partition.
+
+    | Purpose                          | Enhance query flexibility by enabling non-primary key-based queries. |
+    | -------------------------------- | ------------------------------------------------------------ |
+    | Local vs. Global Secondary Index | DynamoDB supports both local and global secondary indexes.   |
+    | Local Secondary Index            | Bound to a partition key and can only be created on tables with composite primary keys. |
+    | Global Secondary Index           | Can be created on tables with either a simple or composite primary key, allowing for more flexibility in query patterns. |
+    | Index Key                        | Specifies the attributes to use as the index key for querying. |
+    | Query Flexibility                | Allows querying based on non-primary key attributes.         |
+    | Query Efficiency                 | Can be less efficient compared to primary key queries, especially for large datasets. |
+    | Aspect                           | Secondary Index                                              |
+    | Storage Overhead                 | Increases storage consumption due to additional data structures. |
+    | Read/Write Capacity              | Consumes read and write capacity units when querying or updating data through the index. |
+
+
+* **Global Secondary Indexes (GSI):**
+
+  - GSIs can be created on tables with either a simple or composite primary key and can be added at any time after creating the base table.
+
+  - They provide more flexibility compared to LSIs because they are not limited to the same partition key as the base table.
+
+  - GSIs are particularly useful when you need to support query patterns that involve non-primary key attributes and when you want to perform queries that span across partitions.
+
+  - They allow you to query data across partitions efficiently and are valuable for distributed and partitioned data scenarios.
+
+    | Aspect                             | Global Secondary Index (GSI)                                 |
+    | ---------------------------------- | ------------------------------------------------------------ |
+    | Purpose                            | Enhance query flexibility by enabling non-primary key-based queries. |
+    | Creation on Tables                 | Can be created on tables with either a simple or composite primary key. |
+    | Index Key                          | Specifies the attributes to use as the index key for querying. |
+    | Query Flexibility                  | Allows querying based on non-primary key attributes.         |
+    | Query Efficiency                   | Offers efficient query performance, even for large datasets. |
+    | Storage Overhead                   | Increases storage consumption due to additional data structures. |
+    | Read/Write Capacity Consumption    | Consumes read and write capacity units when querying or updating data through the index. |
+    | Primary Key Attributes in Queries  | Can include non-key attributes from the table's primary key in queries. |
+    | Projection of Attributes           | Allows specifying which attributes to project into the index, reducing storage and query costs. |
+    | Automatic Index Updates            | Automatically updates the index when adding, modifying, or deleting items in the base table. |
+    | Global Secondary Indexes per Table | A table can have multiple global secondary indexes to support different query patterns. |
+    | Partition and Sort Key Selection   | Allows selection of partition key and optional sort key for the index. |
+    | Costs                              | Incurs costs for storage and provisioned read and write capacity units. |
+    | Consistency                        | Supports both eventual consistency and strong consistency in queries. |
+
+
+* **Choosing Between LSI and GSI:**
+
+  - LSIs are suitable for optimizing queries within a single partition, reducing query costs, and improving query performance within that partition.
+
+  - GSIs are appropriate for enhancing query flexibility and supporting non-primary key-based queries that span across partitions.
+
+  - The choice between LSIs and GSIs should be based on your specific application's query requirements and partitioning strategy.
+
+    | Aspect                              | Local Secondary Index (LSI)                                  | Global Secondary Index (GSI)                                 |
+    | ----------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+    | Availability                        | Must be defined at table creation                            | Can be created or modified anytime                           |
+    | Partition Key Requirement           | Must have the same partition key as the base table           | Can have a different partition key from the base table       |
+    | Sort Key Specification              | Allows you to specify a different sort key from the base table's sort key within the same partition | Allows you to define a separate set of partition and sort keys |
+    | Querying within a Partition         | Optimizes queries within a single partition                  | Supports cross-partition queries                             |
+    | Use Cases                           | Best suited for scenarios where queries need to optimize within a partition, often with narrow query patterns | Ideal for scenarios with diverse query patterns, cross-partition queries, and non-primary key-based queries |
+    | Query Efficiency within a Partition | Provides efficient query performance within the same partition | Efficient for querying within a partition, but may require filter expressions for certain non-key attribute queries |
+    | Cross-Partition Query Support       | Not designed for cross-partition queries                     | Designed to support cross-partition queries efficiently      |
+    | Storage Overhead                    | Increases storage consumption due to additional data structures | Increases storage consumption due to additional data structures |
+    | Read/Write Capacity Consumption     | Consumes read and write capacity units when querying or updating data through the index | Consumes read and write capacity units when querying or updating data through the index |
+    | Query Cost Reduction                | Reduces query costs within a partition by optimizing data retrieval | Helps reduce query costs and improve query performance for diverse query patterns |
+    | Limitations                         | Limited to optimizing queries within the same partition and requires defining sort keys at table creation | Offers more flexibility but incurs higher storage and capacity costs compared to LSIs |
+    | Use Case Examples                   | E-commerce applications with user-specific data, financial applications with partitioned data | Applications with complex query patterns, diverse access patterns, and large datasets |
 ## **Creating a Table**
 
 ```python
